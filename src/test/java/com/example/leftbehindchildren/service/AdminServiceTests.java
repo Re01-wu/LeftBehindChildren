@@ -60,6 +60,7 @@ class AdminServiceTests {
     @Test
     void testUpdateAdmin() {
         when(adminRepository.findById(1L)).thenReturn(Optional.of(admin));
+        when(adminRepository.save(any(Admin.class))).thenReturn(admin);
 
         admin.setUsername("updatedAdmin");
         Admin updated = adminService.updateAdmin(admin);
