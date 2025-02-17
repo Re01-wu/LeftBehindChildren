@@ -108,22 +108,26 @@ const rules = ref<FormRules<ChildForm>>({
   ]
 })
 
-const submitForm = () => {
-  formRef.value?.validate((valid) => {
+const submitForm = async () => {
+  formRef.value?.validate(async (valid) => {
     if (valid) {
-      loading.value = true
-      // TODO: 调用添加接口
-      setTimeout(() => {
-        loading.value = false
-        ElMessage.success('添加成功')
-        router.push({ name: 'admin.children.list' })
-      }, 1000)
+      loading.value = true;
+      try {
+        // 假设有一个 API 来添加儿童信息
+        await axios.post('/api/children', form.value);
+        ElMessage.success('添加成功');
+        router.push({ name: 'admin.children.list' });
+      } catch (error) {
+        ElMessage.error('添加失败');
+      } finally {
+        loading.value = false;
+      }
     }
-  })
-}
+  });
+};
 
 const resetForm = () => {
-  formRef.value?.resetFields()
+  formRef.value?.resetFields();
 }
 </script>
 

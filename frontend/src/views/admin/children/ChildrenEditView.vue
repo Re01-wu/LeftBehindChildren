@@ -125,23 +125,27 @@ onMounted(() => {
   }
 })
 
-const submitForm = () => {
-  formRef.value?.validate((valid) => {
+const submitForm = async () => {
+  formRef.value?.validate(async (valid) => {
     if (valid) {
-      loading.value = true
-      // TODO: 调用更新接口
-      setTimeout(() => {
-        loading.value = false
-        ElMessage.success('保存成功')
-        router.push({ name: 'admin.children.list' })
-      }, 1000)
+      loading.value = true;
+      try {
+        // 假设有一个 API 来更新儿童信息
+        await axios.put(`/api/children/${form.value.id}`, form.value);
+        ElMessage.success('更新成功');
+        router.push({ name: 'admin.children.list' });
+      } catch (error) {
+        ElMessage.error('更新失败');
+      } finally {
+        loading.value = false;
+      }
     }
-  })
-}
+  });
+};
 
 const goBack = () => {
-  router.go(-1)
-}
+  router.push({ name: 'admin.children.list' });
+};
 </script>
 
 <style scoped>

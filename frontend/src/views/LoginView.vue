@@ -40,6 +40,7 @@ import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'
 import type { FormInstance, FormRules } from 'element-plus'
+import { authApi } from '../api/services'
 
 interface LoginForm {
   username: string
@@ -65,17 +66,20 @@ const rules = ref<FormRules<LoginForm>>({
 })
 
 const submitForm = () => {
-  loginFormRef.value?.validate((valid) => {
+  loginFormRef.value?.validate(async (valid) => {
     if (valid) {
-      loading.value = true
-      // TODO: 调用登录接口
-      setTimeout(() => {
-        loading.value = false
-        ElMessage.success('登录成功')
-        router.push({ name: 'home' })
-      }, 1000)
+      loading.value = true;
+      try {
+        await authApi.login(loginForm.value);
+        ElMessage.success('登录成功');
+        router.push({ name: 'home' });
+      } catch (error) {
+        ElMessage.error('登录失败，请检查用户名和密码');
+      } finally {
+        loading.value = false;
+      }
     }
-  })
+  });
 }
 
 const resetForm = () => {

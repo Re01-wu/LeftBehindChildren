@@ -80,17 +80,21 @@ const rules = ref<FormRules<ProfileForm>>({
 })
 
 const submitForm = () => {
-  formRef.value?.validate((valid) => {
+  formRef.value?.validate(async (valid) => {
     if (valid) {
-      loading.value = true
-      // TODO: 调用更新接口
-      setTimeout(() => {
-        loading.value = false
-        ElMessage.success('保存成功')
-      }, 1000)
+      loading.value = true;
+      try {
+        // 假设有一个 API 来更新用户信息
+        await axios.put('/api/user/profile', form.value);
+        ElMessage.success('保存成功');
+      } catch (error) {
+        ElMessage.error('保存失败');
+      } finally {
+        loading.value = false;
+      }
     }
-  })
-}
+  });
+};
 </script>
 
 <style scoped>
